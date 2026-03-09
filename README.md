@@ -1,7 +1,7 @@
-## Civilisation-Simulator
+# Civilisation-Simulator
 This will be a simulation of civilisations in the form of hexagonal tiles.
 
-# Tiles
+## Tiles
 
 A tile can have multiple states:
   \-Part of a kingdom -> its color depends on the kingdom.
