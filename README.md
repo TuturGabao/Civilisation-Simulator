@@ -4,7 +4,7 @@ This will be a simulation of civilisations in the form of hexagonal tiles.
 ## Tiles
 
 A tile can have multiple states:\
-  \-Part of a kingdom -> its color depends on the kingdom.\
+	\-Part of a kingdom -> its color depends on the kingdom.\
     If it is at the edge of the kingdom there will be a small wall around it.\
     Can be the siege of the kingdom -> A big castle at the center of the tile (its size depends on the size of the kingdom).\
     Work tile -> Conatins the workshop or any industry used in the tile. It will be used to make some ressources for the kingdom.\
