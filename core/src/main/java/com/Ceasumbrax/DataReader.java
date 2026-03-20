@@ -22,8 +22,7 @@ public class DataReader {
 
     public float[] getPosesPlayer() {
         JsonValue root = new JsonReader().parse(Gdx.files.internal(pathToPlayerData));
-        System.out.println("Heyyy");
-        System.out.println("Heyyy");
+
         float xPose;
         float yPose;
 
