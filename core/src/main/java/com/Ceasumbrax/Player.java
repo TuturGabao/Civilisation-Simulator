@@ -37,6 +37,8 @@ public class Player {
     Player(float[] poses, Texture texture, Texture textureSide, Texture textureUp, Texture textureDown, Texture textureUpDiagonal, Texture textureDownDiagonal) {
         x = poses[0]; y = poses[1];
 
+        System.out.println("Hey");
+
         playerSizeWidth = 38;
         playerSizeHeight = 48;
 
