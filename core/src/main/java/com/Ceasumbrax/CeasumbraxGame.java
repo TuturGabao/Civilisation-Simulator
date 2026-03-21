@@ -21,14 +21,6 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
 
     public int speed;
 
-    private Player player;
-    private Texture playerTexture;
-    private Texture playerTextureSide;
-    private Texture playerTextureUp;
-    private Texture playerTextureDown;
-    private Texture playerTextureUpDiagonal;
-    private Texture playerTextureDownDiagonal;
-
     private Map map;
     private SpriteBatch batch;
 
@@ -36,11 +28,13 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
     public boolean right;
     public boolean up;
     public boolean down;
+    public boolean shifted;
 
     private final int leftKey = Input.Keys.A;
     private final int rightKey = Input.Keys.D;
     private final int upKey = Input.Keys.W;
     private final int downKey = Input.Keys.S;
+    private final int shiftKey = Input.Keys.SHIFT_LEFT;
 
     private DataReader dataReader;
 
@@ -54,14 +48,7 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
         WIDTH = Gdx.graphics.getDisplayMode().width;
         HEIGHT = Gdx.graphics.getDisplayMode().height;
 
-        playerTexture = new Texture("AliveRelated/Humans/HumanClassic.png");
-        playerTextureSide = new Texture("AliveRelated/Humans/HumanSide.png");
-        playerTextureUp = new Texture("AliveRelated/Humans/HumanUp.png");
-        playerTextureDown = new Texture("AliveRelated/Humans/HumanDown.png");
-        playerTextureUpDiagonal = new Texture("AliveRelated/Humans/HumanUpDiagonal.png");
-        playerTextureDownDiagonal = new Texture("AliveRelated/Humans/HumanDownDiagonal.png");
-
-        map = new Map(WIDTH, HEIGHT);
+        map = new Map(WIDTH, HEIGHT, "Arthur Game");
         batch = new SpriteBatch();
 
         Gdx.input.setInputProcessor(this);
@@ -69,72 +56,64 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
     }
 
     @Override
-        public void create() {
-            init();
+    public void create() {
+        init();
 
-            dataReader = new DataReader("Arthur Game");
+        dataReader = new DataReader("Arthur Game");
 
-            player = new Player(dataReader.getPosesPlayer(), playerTexture, playerTextureSide, playerTextureUp, playerTextureDown, playerTextureUpDiagonal, playerTextureDownDiagonal);
+        Gdx.graphics.setWindowedMode(WIDTH, HEIGHT);
 
-            //Gdx.graphics.setWindowedMode(WIDTH, HEIGHT);
+        shapeRenderer = new ShapeRenderer();
+    }
 
-            shapeRenderer = new ShapeRenderer();
-            dataReader = new DataReader("Arthur Game");
+    @Override
+    public void render() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        handleMovement(delta);
+
+        // Clear screen
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Draw square
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        //shapeRenderer.rect(player.x, player.y, squareWidth, squareHeight);
+
+        batch.begin();
+
+        int[][] tiledMap = map.drawTiledMapReturningIntMap(batch);
+
+        batch.end();
+
+
+        Gdx.graphics.setForegroundFPS(120);
+        //System.out.println(Gdx.graphics.getFramesPerSecond());
+
+        shapeRenderer.end();
+    }
+
+    public void handleMovement(float delta) {
+
+        map.left = left;
+        map.right = right;
+        map.up = up;
+        map.down = down;
+        map.shifted = shifted;
+
+        map.handleMapMovement(delta);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+
+            Gdx.app.exit();
         }
+    }
 
-        @Override
-        public void render() {
-            float delta = Gdx.graphics.getDeltaTime();
-
-            handleMovement(delta);
-
-            // Clear screen
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-            // Draw square
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.RED);
-            //shapeRenderer.rect(player.x, player.y, squareWidth, squareHeight);
-
-            batch.begin();
-
-            int[][] tiledMap = map.drawTiledMapReturningIntMap(batch);
-            player.drawImage(batch);
-
-            batch.end();
-
-
-            Gdx.graphics.setForegroundFPS(120);
-            System.out.println(Gdx.graphics.getFramesPerSecond());
-
-            shapeRenderer.end();
-        }
-
-        public void handleMovement(float delta) {
-            player.left = left;
-            player.right = right;
-            player.up = up;
-            player.down = down;
-
-            map.left = left;
-            map.right = right;
-            map.up = up;
-            map.down = down;
-
-            player.handleMovement();
-            map.handleMapMovement(delta);
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-
-                Gdx.app.exit();
-            }
-        }
-
-        @Override
-        public void dispose() {
-            shapeRenderer.dispose();
-        }
+    @Override
+    public void dispose() {
+        shapeRenderer.dispose();
+    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -142,6 +121,7 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
         if (keycode == rightKey) right = true;
         if (keycode == upKey) up = true;
         if (keycode == downKey) down = true;
+        if (keycode == shiftKey) shifted = true;
 
         return true;
     }
@@ -152,6 +132,7 @@ public class CeasumbraxGame extends ApplicationAdapter implements InputProcessor
         if (keycode == rightKey) right = false;
         if (keycode == upKey) up = false;
         if (keycode == downKey) down = false;
+        if (keycode == shiftKey) shifted = false;
 
         return true;
     }
